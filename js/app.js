@@ -5,6 +5,7 @@ console.log('mic check one two, mic check 1 annnd 2');
 //**************GLOBALS********** */
 let productArray = [];
 let votingRounds = 25;
+let indexArray = [];
 
 //************DOM WINDOWS********* */
 let imgContainer = document.getElementById('img-container');
@@ -28,12 +29,62 @@ function itemDisp(name, fileExtension = 'jpg') {
 }
 
 // let usedImages = [];
+
+function randomIndex() {
+  return Math.floor(Math.random() * productArray.length);
+}
+//***************Helper Function to Render Chart************* */
+function renderChart() {
+let prodNames = [];
+let prodVotes = [];
+let prodViews = [];
+  
+  
+  for (let i = 0; i < productArray.length; i++) {
+    prodNames.push(productArray[i].name);
+    prodVotes.push(productArray[i].votes);
+    prodViews.push(productArray[i].views);
+  }
+  
+
+
+let chartObj = {
+  type: 'bar',
+  data: {
+    labels: prodNames, 
+    datasets: [{
+      label: '# Of Votes',
+      data: prodVotes, // *** VOTES - needed an array
+      borderWidth: 5,
+      backgroundColor: ['blue'],
+      borderColor: ['blue']
+    },
+    {
+      label: '# of Views',
+      data: prodViews, // *** VIEWS - needed an array
+      borderWidth: 5,
+      backgroundColor: ['black'],
+      borderColor: ['black']
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+};
+
+
+// *** for the Chart Constructor- canvas element and config obj with product data
+new Chart(ctx, chartObj); 
+}
 //************HELPER FUNCTIONS/UTILITIES******* */
 //Round 1: A B C
 //Round 2: J M O
 //Round 3: A C B
 
-let indexArray = [];
 
 function renderImg() {
   while (indexArray.length < 6) {
@@ -76,57 +127,6 @@ function renderImg() {
   productArray[imgTwoIndex].views++;
   productArray[imgThreeIndex].views++;
 }
-
-function randomIndex() {
-  return Math.floor(Math.random() * productArray.length);
-}
-//***************Helper Function to Render Chart************* */
-let prodNames = [];
-let prodVotes = [];
-let prodViews = [];
-function renderChart() {
-
-
-  for (let i = 0; i < productArray.length; i++) {
-    prodNames.push(productArray[i].name);
-    prodVotes.push(productArray[i].votes);
-    prodViews.push(productArray[i].views);
-  }
-
-}
-
-let chartObj = {
-  type: 'bar',
-  data: {
-    labels: prodNames, 
-    datasets: [{
-      label: '# Of Votes',
-      data: prodVotes, // *** VOTES - needed an array
-      borderWidth: 5,
-      backgroundColor: ['blue'],
-      borderColor: ['blue']
-    },
-    {
-      label: '# of Views',
-      data: prodViews, // *** VIEWS - needed an array
-      borderWidth: 5,
-      backgroundColor: ['black'],
-      borderColor: ['black']
-    }]
-  },
-  options: {
-    scales: {
-      y: {
-        beginAtZero: false
-      }
-    }
-  }
-};
-
-
-// *** for the Chart Constructor- canvas element and config obj with product data
- new Chart(ctx, chartObj); 
-
 //**********EVENT HANDLER******** */
 function handleImgClick(event) {
 
