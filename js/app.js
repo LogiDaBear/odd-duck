@@ -12,9 +12,14 @@ let imgOne = document.getElementById('img-one');
 let imgTwo = document.getElementById('img-two');
 let imgThree = document.getElementById('img-three');
 let resultsBtn = document.getElementById('show-results-btn');
-let resultsList = document.getElementById('results-container');
+// let resultsList = document.getElementById('results-container');
+
+//*************CANVAS ELEMENT FOR CHART********* */
+
+let ctx = document.getElementById('my-chart');
 
 //**********CONSTRUCTOR FUNCTION*********** */
+
 function itemDisp(name, fileExtension = 'jpg') {
   this.name = name;
   this.image = `img/${name}.${fileExtension}`;
@@ -24,39 +29,44 @@ function itemDisp(name, fileExtension = 'jpg') {
 
 // let usedImages = [];
 //************HELPER FUNCTIONS/UTILITIES******* */
+//Round 1: A B C
+//Round 2: J M O
+//Round 3: A C B
+
+let indexArray = [];
 
 function renderImg() {
-  let imgOneIndex = randomIndex();
-  let imgTwoIndex = randomIndex();
-  let imgThreeIndex = randomIndex();
-
-
-
-  //**********COMPARE IMAGES -while- they are the same get a new randomIndex -if false?- display image***************** */
-
-  while(imgOneIndex === imgTwoIndex || imgOneIndex === imgThreeIndex || imgTwoIndex === imgThreeIndex){
-    imgTwoIndex = randomIndex();
-    imgThreeIndex = randomIndex();
-
+  while (indexArray.length < 6) {
+    let randoNum = randomIndex();
+    if (!indexArray.includes(randoNum)) {//If not in array push in
+      indexArray.push(randoNum);
+    }
   }
-  // if (!usedImages[num]) {
-  //   document.src = productArray[num];
-  //   usedImages[num] = true;
-  //   usedImagesCount++;
-  //   if (usedImagesCount === productArray.length) {
-  //     usedImagesCount = 0;
-  //     usedImages = [];
-  //   }
-  // } else {
-  //   renderImg();
+  console.log(indexArray);
+
+  //The shift() method removes the first element from an array and returns that removed element. This method changes the length of the array.
+  let imgOneIndex = indexArray.shift(); 
+  let imgTwoIndex = indexArray.shift();
+  let imgThreeIndex = indexArray.shift();
+
+
+
+  //**********COMPARE IMAGES -while- they are the same get a new randomIndex -OR- display image***************** */
+
+  // while(imgOneIndex === imgTwoIndex || imgOneIndex === imgThreeIndex || imgTwoIndex === imgThreeIndex){
+  //   imgTwoIndex = randomIndex();
+  //   imgThreeIndex = randomIndex();
+
   // }
-  
+
   imgOne.src = productArray[imgOneIndex].image;
   imgOne.title = productArray[imgOneIndex].name;
   imgOne.alt = `this is an image of ${productArray[imgOneIndex].name} product.`;
+
   imgTwo.src = productArray[imgTwoIndex].image;
   imgTwo.title = productArray[imgTwoIndex].name;
   imgTwo.alt = `this is an image of ${productArray[imgTwoIndex].name} product.`;
+
   imgThree.src = productArray[imgThreeIndex].image;
   imgThree.title = productArray[imgThreeIndex].name;
   imgThree.alt = `this is an image of ${productArray[imgThreeIndex].name} product.`;
@@ -70,9 +80,56 @@ function renderImg() {
 function randomIndex() {
   return Math.floor(Math.random() * productArray.length);
 }
+//***************Helper Function to Render Chart************* */
+let prodNames = [];
+let prodVotes = [];
+let prodViews = [];
+function renderChart() {
 
+
+  for (let i = 0; i < productArray.length; i++) {
+    prodNames.push(productArray[i].name);
+    prodVotes.push(productArray[i].votes);
+    prodViews.push(productArray[i].views);
+  }
+
+}
+
+let chartObj = {
+  type: 'bar',
+  data: {
+    labels: prodNames, 
+    datasets: [{
+      label: '# Of Votes',
+      data: prodVotes, // *** VOTES - needed an array
+      borderWidth: 5,
+      backgroundColor: ['blue'],
+      borderColor: ['blue']
+    },
+    {
+      label: '# of Views',
+      data: prodViews, // *** VIEWS - needed an array
+      borderWidth: 5,
+      backgroundColor: ['black'],
+      borderColor: ['black']
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: false
+      }
+    }
+  }
+};
+
+
+// *** for the Chart Constructor- canvas element and config obj with product data
+ new Chart(ctx, chartObj); 
+
+//**********EVENT HANDLER******** */
 function handleImgClick(event) {
-  
+
   //**** Identify image clicked */
   let imgClicked = event.target.title;
   console.dir(imgClicked);
@@ -81,14 +138,14 @@ function handleImgClick(event) {
   for (let i = 0; i < productArray.length; i++) {
     if (imgClicked === productArray[i].name) {
       productArray[i].votes++;
+
+      //****Decrement the voting rounds */
+      votingRounds--;
+      //*****Rerender of imgs */
+      renderImg();
     }
   }
 
-  //****Decrement the voting rounds */
-  votingRounds--;
-
-  //*****Rerender of imgs */
-  renderImg();
 
   //*****Once voting done - stop the click */
   if (votingRounds === 0) {
@@ -100,11 +157,12 @@ function handleImgClick(event) {
 
 function handleShowResults() {
   if (votingRounds === 0) {
-    for (let i = 0; i < productArray.length; i++) {
-      let productListItem = document.createElement('li');
-      productListItem.textContent = `${productArray[i].name}: Views: ${productArray[i].views} & Votes: ${productArray[i].votes}`;
-      resultsList.appendChild(productListItem);
-    }
+    // for (let i = 0; i < productArray.length; i++) {
+    //   let productListItem = document.createElement('li');
+    //   productListItem.textContent = `${productArray[i].name}: Views: ${productArray[i].views} & Votes: ${productArray[i].votes}`;
+    //   resultsList.appendChild(productListItem);
+    // }
+    renderChart();
     resultsBtn.removeEventListener('click', handleShowResults);
   }
 }
