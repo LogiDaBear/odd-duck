@@ -90,12 +90,12 @@ function renderImg() {
   while (indexArray.length < 6) {
     let randoNum = randomIndex();
     if (!indexArray.includes(randoNum)) {//If not in array push in
-      indexArray.push(randoNum);
+      indexArray.push(randoNum); //opposite of push is .unshift
     }
   }
   console.log(indexArray);
 
-  //The shift() method removes the first element from an array and returns that removed element. This method changes the length of the array.
+  //The shift() method removes the first element from an array and returns that removed element. This method changes the length of the array. opposite is .pop
   let imgOneIndex = indexArray.shift(); 
   let imgTwoIndex = indexArray.shift();
   let imgThreeIndex = indexArray.shift();
@@ -150,9 +150,18 @@ function handleImgClick(event) {
   //*****Once voting done - stop the click */
   if (votingRounds === 0) {
     imgContainer.removeEventListener('click', handleImgClick);
+
+
+    //*****LOCAL STORAGE STARTS HERE***** */
+    //! STEP 1- Convert our data to a string to store in local storage
+    let stringifiedProds = JSON.stringify(productArray);
+    
+    console.log('Stringified products >>', stringifiedProds);
+    
+    localStorage.setItem('myProducts', stringifiedProds);
+    
+    
   }
-
-
 }
 
 function handleShowResults() {
@@ -168,27 +177,86 @@ function handleShowResults() {
 }
 
 //************EXECUTABLE CODE*********** */
-let sweep = new itemDisp('sweep', 'png');
-let bag = new itemDisp('bag');
-let banana = new itemDisp('banana');
-let bathroom = new itemDisp('bathroom');
-let boots = new itemDisp('boots');
-let breakfast = new itemDisp('breakfast');
-let bubblegum = new itemDisp('bubblegum');
-let chair = new itemDisp('chair');
-let cthulhu = new itemDisp('cthulhu');
-let dogDuck = new itemDisp('dog-duck');
-let dragon = new itemDisp('dragon');
-let pen = new itemDisp('pen');
-let petSweep = new itemDisp('pet-sweep');
-let scissors = new itemDisp('scissors');
-let shark = new itemDisp('shark');
-let tauntaun = new itemDisp('tauntaun');
-let unicorn = new itemDisp('unicorn');
-let waterCan = new itemDisp('water-can');
-let wineGlass = new itemDisp('wine-glass');
 
-productArray.push(sweep, bag, banana, bathroom, boots, breakfast, bubblegum, chair, cthulhu, dogDuck, dragon, pen, petSweep, scissors, shark, tauntaun, unicorn, waterCan, wineGlass);
+//********LOCAL STORAGE CONTINUES...***** */
+//! STEP 3 GET INFO FROM LOCAL STORAGE
+let retrievedProds = localStorage.getItem('myProducts');
+
+console.log('prods from ls>>>>',retrievedProds);
+//! STEP 4 CONVERT BACK TO USEABLE CODE
+let parsedProds = JSON.parse(retrievedProds);
+
+console.log('parsed prods>>>>', parsedProds);
+
+//*********REBUILD Products USING THE CONSTRUCTOR** */
+
+// if(retrievedProds){
+//   for(let i = 0; i < parsedProds.length; i++){
+//     if(parsedProds[i].name === 'sweep'){
+//       let reconstructedSweep = new itemDisp(parsedProds[i].name, 'png');
+//       reconstructedSweep.views = parsedProds[i].views;
+//       reconstructedSweep.votes = parsedProds[i].votes;
+//       productArray.push(reconstructedSweep);
+//     }else{
+//       let reconstructedProd = new itemDisp(parsedProds[i].name);
+//       reconstructedProd.views = parsedProds[i].views;
+//       reconstructedProd.votes = parsedProds[i].votes;
+//       productArray.push(reconstructedProd);
+//     }
+//   }
+
+// }else{
+//   let sweep = new itemDisp('sweep', 'png');
+//   let bag = new itemDisp('bag');
+//   let banana = new itemDisp('banana');
+//   let bathroom = new itemDisp('bathroom');
+//   let boots = new itemDisp('boots');
+//   let breakfast = new itemDisp('breakfast');
+//   let bubblegum = new itemDisp('bubblegum');
+//   let chair = new itemDisp('chair');
+//   let cthulhu = new itemDisp('cthulhu');
+//   let dogDuck = new itemDisp('dog-duck');
+//   let dragon = new itemDisp('dragon');
+//   let pen = new itemDisp('pen');
+//   let petSweep = new itemDisp('pet-sweep');
+//   let scissors = new itemDisp('scissors');
+//   let shark = new itemDisp('shark');
+//   let tauntaun = new itemDisp('tauntaun');
+//   let unicorn = new itemDisp('unicorn');
+//   let waterCan = new itemDisp('water-can');
+//   let wineGlass = new itemDisp('wine-glass');
+  
+//   productArray.push(sweep, bag, banana, bathroom, boots, breakfast, bubblegum, chair, cthulhu, dogDuck, dragon, pen, petSweep, scissors, shark, tauntaun, unicorn, waterCan, wineGlass);
+
+// }
+//******'EASY' path out of woods ********/
+if(retrievedProds){
+  productArray = parsedProds;
+
+}else{
+  let sweep = new itemDisp('sweep', 'png');
+  let bag = new itemDisp('bag');
+  let banana = new itemDisp('banana');
+  let bathroom = new itemDisp('bathroom');
+  let boots = new itemDisp('boots');
+  let breakfast = new itemDisp('breakfast');
+  let bubblegum = new itemDisp('bubblegum');
+  let chair = new itemDisp('chair');
+  let cthulhu = new itemDisp('cthulhu');
+  let dogDuck = new itemDisp('dog-duck');
+  let dragon = new itemDisp('dragon');
+  let pen = new itemDisp('pen');
+  let petSweep = new itemDisp('pet-sweep');
+  let scissors = new itemDisp('scissors');
+  let shark = new itemDisp('shark');
+  let tauntaun = new itemDisp('tauntaun');
+  let unicorn = new itemDisp('unicorn');
+  let waterCan = new itemDisp('water-can');
+  let wineGlass = new itemDisp('wine-glass');
+  
+  productArray.push(sweep, bag, banana, bathroom, boots, breakfast, bubblegum, chair, cthulhu, dogDuck, dragon, pen, petSweep, scissors, shark, tauntaun, unicorn, waterCan, wineGlass);
+
+}
 
 renderImg();
 
